@@ -1,0 +1,19 @@
+{
+  "name": "carbon-tracker-backend",
+  "version": "1.0.0",
+  "description": "Carbon Tracker Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carbon-tracker-dev/carbon-tracker-backend.git"
+  },
+  "author": "shreyas k",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carbon-tracker-dev/carbon-tracker-backend/issues"
+  },
+  "homepage": "https://github.com/carbon-tracker-dev/carbon-tracker-backend#readme"
+}
