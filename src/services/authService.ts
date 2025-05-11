@@ -1,12 +1,13 @@
 import { prisma } from "../db/prismaClient";
+import { UserRegisterInput } from "../types";
 import { comparePasswords, hashPassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
 
-export const registerUser = async (
-    email: string,
-    password: string,
-    name: string
-) => {
+export const registerUser = async ({
+    email,
+    password,
+    name,
+}: UserRegisterInput) => {
     const hashedPassword = await hashPassword(password);
     return prisma.user.create({
         data: { email, password: hashedPassword, name },

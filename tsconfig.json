@@ -113,20 +113,20 @@
 // }
 
 {
-  "compilerOptions": {
-    "target": "es2020",                          // Enables modern JS features
-    "module": "commonjs",                        // Compatible with ts-node-dev
-    "lib": ["es2020"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,                     // Allows default imports from CommonJS modules
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "resolveJsonModule": true                    // Optional: if importing .json files
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+    "compilerOptions": {
+        "target": "es2020", // Enables modern JS features
+        "module": "commonjs", // Compatible with ts-node-dev
+        "lib": ["es2020"],
+        "moduleResolution": "node",
+        "esModuleInterop": true, // Allows default imports from CommonJS modules
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "rootDir": "src",
+        "outDir": "dist",
+        "resolveJsonModule": true // Optional: if importing .json files
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }

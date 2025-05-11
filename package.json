@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/server.ts"
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "lint": "eslint . --ext .ts"
   },
   "repository": {
     "type": "git",
