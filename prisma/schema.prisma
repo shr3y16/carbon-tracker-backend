@@ -15,9 +15,25 @@ datasource db {
 }
 
 model User {
-  id          Int    @id @default(autoincrement())
-  email       String @unique
-  password    String
-  name        String
-  createdAt   DateTime @default(now())
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String
+  createdAt  DateTime   @default(now())
+
+  activities Activity[]
 }
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  category    String  
+  description String?
+  emission    Float   
+  date        DateTime
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+

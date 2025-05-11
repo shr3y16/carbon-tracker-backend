@@ -9,3 +9,11 @@ export interface LoggedInUser {
     email: string;
     name: string;
 }
+
+export interface ActivityInput {
+    category: string;
+    description: string;
+    emission: number;
+    activityDate: Date;
+    userId?: number; //check this later
+};
