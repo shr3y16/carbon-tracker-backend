@@ -1,13 +1,9 @@
-import { prisma } from "../db/prismaClient";
-import { UserRegisterInput } from "../types";
-import { comparePasswords, hashPassword } from "../utils/hash";
-import { generateToken } from "../utils/jwt";
+import { prisma } from '../db/prismaClient';
+import { UserRegisterInput } from '../types';
+import { comparePasswords, hashPassword } from '../utils/hash';
+import { generateToken } from '../utils/jwt';
 
-export const registerUser = async ({
-    email,
-    password,
-    name,
-}: UserRegisterInput) => {
+export const registerUser = async ({ email, password, name }: UserRegisterInput) => {
     const hashedPassword = await hashPassword(password);
     return prisma.user.create({
         data: { email, password: hashedPassword, name },
@@ -17,7 +13,7 @@ export const registerUser = async ({
 export const loginUser = async (email: string, password: string) => {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !(await comparePasswords(password, user.password))) {
-        throw new Error("Invalid credentials");
+        throw new Error('Invalid credentials');
     }
     const token = generateToken({ userId: user.id });
     return { token, user };
