@@ -1,12 +1,25 @@
-import express from "express";
-import { authenticateToken } from "../middlewares/authMiddleware";
-import { addActivity, deleteActivityById } from "../controllers/activityController";
+import express from 'express';
+import { authenticateToken } from '../middlewares/authMiddleware';
+import {
+    addActivityController,
+    deleteActivityController,
+    getActivitiesByIdController,
+    getActivitiesByUserIdController,
+} from '../controllers/activityController';
+import { validateCreateActivity } from '../middlewares/validators/activityValidators';
+import { handleValidation } from '../middlewares/validate';
 
 const router = express.Router();
 
-router.post("/add", authenticateToken, addActivity);
-router.post("/remove/:id", authenticateToken, deleteActivityById);
-
-// router.post("/login", login);
+router.get('/all', authenticateToken, getActivitiesByUserIdController);
+router.get('/:id', authenticateToken, getActivitiesByIdController);
+router.post(
+    '/add',
+    authenticateToken,
+    validateCreateActivity,
+    handleValidation,
+    addActivityController,
+);
+router.delete('/remove/:id', authenticateToken, deleteActivityController);
 
 export default router;

@@ -1,13 +1,18 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/authMiddleware';
-import { createActivity, removeActivityById } from '../services/activityService';
+import {
+    addActivityService,
+    deleteActivityService,
+    getActivitiesByUserIdService,
+    getActivityByIdAndUserIdService,
+} from '../services/activityService';
 
-export const addActivity = async (req: AuthRequest, res: Response) => {
+export const addActivityController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
         const { category, description, emission, date } = req.body;
         const activityDate = new Date(date);
-        const activity = await createActivity({
+        const activity = await addActivityService({
             category,
             description,
             emission,
@@ -20,12 +25,33 @@ export const addActivity = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const deleteActivityById = async (req: AuthRequest, res: Response) => {
+export const deleteActivityController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
         const id = parseInt(req.params.id);
-        const deletedActivity = await removeActivityById(id, userId);
+        const deletedActivity = await deleteActivityService(id, userId);
         res.status(201).json(deletedActivity);
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const getActivitiesByUserIdController = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        const activities = await getActivitiesByUserIdService(userId);
+        res.status(200).json(activities);
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const getActivitiesByIdController = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+        const activity = await getActivityByIdAndUserIdService(id, userId);
+        res.status(200).json(activity);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
     }
