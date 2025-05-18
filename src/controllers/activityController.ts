@@ -5,6 +5,7 @@ import {
     deleteActivityService,
     getActivitiesByUserIdService,
     getActivityByIdAndUserIdService,
+    updateActivityService,
 } from '../services/activityService';
 
 export const addActivityController = async (req: AuthRequest, res: Response) => {
@@ -56,3 +57,26 @@ export const getActivitiesByIdController = async (req: AuthRequest, res: Respons
         res.status(400).json({ error: err.message });
     }
 };
+
+export const updateActivityController = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+        const { category, description, emission, date } = req.body;
+        let activityDate: Date | undefined;
+        if (date) {
+            activityDate = new Date(date);
+        }
+        const updatedActivity = await updateActivityService({
+            category,
+            description,
+            emission,
+            activityDate,
+            userId,
+            id,
+        });
+        res.status(200).json(updatedActivity);
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+}

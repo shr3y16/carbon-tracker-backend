@@ -17,3 +17,7 @@ export interface ActivityInput {
     activityDate: Date;
     userId?: number; //check this later
 };
+
+export interface EditActivityInput extends Partial<ActivityInput> {
+    id: number;
+}

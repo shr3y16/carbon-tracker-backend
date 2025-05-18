@@ -1,4 +1,5 @@
 import { prisma } from '../db/prismaClient';
+import { EditActivityInput } from '../types';
 
 export const fetchActivityById = async (id: number, userId?: number) => {
     try {
@@ -16,7 +17,7 @@ export const fetchActivityById = async (id: number, userId?: number) => {
     }
 };
 
-export const deleteActivityController = async (id: number, userId?: number) => {
+export const deleteActivityByIdAndUserId = async (id: number, userId?: number) => {
     try {
         const deletedActivity = await prisma.activity.delete({
             where: { id, userId },
@@ -27,6 +28,35 @@ export const deleteActivityController = async (id: number, userId?: number) => {
         }
 
         return deletedActivity;
+    } catch (error: any) {
+        throw new Error(`${error.message}`);
+    }
+};
+
+export const updateActivityByIdAndUserId = async ({
+    id,
+    userId,
+    category,
+    emission,
+    description,
+    activityDate,
+}: EditActivityInput) => {
+    try {
+        const updatedActivity = await prisma.activity.update({
+            where: { id, userId },
+            data: {
+                category,
+                emission,
+                description,
+                date: activityDate,
+            },
+        });
+
+        if (!updatedActivity) {
+            throw new Error(`Activity with ID ${id} not found`);
+        }
+
+        return updatedActivity;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }

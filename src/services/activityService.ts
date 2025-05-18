@@ -1,6 +1,6 @@
 import { prisma } from '../db/prismaClient';
-import { ActivityInput } from '../types';
-import { deleteActivityController, fetchActivityById } from '../db/activity';
+import { ActivityInput, EditActivityInput } from '../types';
+import { deleteActivityByIdAndUserId, fetchActivityById, updateActivityByIdAndUserId } from '../db/activity';
 
 export const addActivityService = async ({
     category,
@@ -26,7 +26,7 @@ export const addActivityService = async ({
 
 export const deleteActivityService = async (id: number, userId?: number) => {
     try {
-        return await deleteActivityController(id, userId);
+        return await deleteActivityByIdAndUserId(id, userId);
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
@@ -45,6 +45,28 @@ export const getActivitiesByUserIdService = async (userId?: number) => {
 export const getActivityByIdAndUserIdService = async (id: number, userId?: number) => {
     try {
         return await fetchActivityById(id, userId);
+    } catch (error: any) {
+        throw new Error(`${error.message}`);
+    }
+};
+
+export const updateActivityService = async ({
+    id,
+    userId,
+    category,
+    emission,
+    description,
+    activityDate,
+}: EditActivityInput) => {
+    try {
+        return await updateActivityByIdAndUserId({
+            id,
+            userId,
+            category,
+            emission,
+            description,
+            activityDate,
+        });
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }

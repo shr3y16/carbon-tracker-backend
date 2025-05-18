@@ -5,6 +5,7 @@ import {
     deleteActivityController,
     getActivitiesByIdController,
     getActivitiesByUserIdController,
+    updateActivityController,
 } from '../controllers/activityController';
 import { validateCreateActivity } from '../middlewares/validators/activityValidators';
 import { handleValidation } from '../middlewares/validate';
@@ -21,5 +22,6 @@ router.post(
     addActivityController,
 );
 router.delete('/remove/:id', authenticateToken, deleteActivityController);
+router.patch('/update/:id', authenticateToken, updateActivityController);
 
 export default router;
