@@ -42,7 +42,15 @@ export const updateActivityByIdAndUserId = async ({
     activityDate,
 }: EditActivityInput) => {
     try {
-        const updatedActivity = await prisma.activity.update({
+        const activity = await prisma.activity.findUnique({
+            where: { id, userId },
+        });
+
+        if (!activity) {
+            throw new Error(`Activity with ID ${id} not found`);
+        }
+
+        return await prisma.activity.update({
             where: { id, userId },
             data: {
                 category,
@@ -51,12 +59,6 @@ export const updateActivityByIdAndUserId = async ({
                 date: activityDate,
             },
         });
-
-        if (!updatedActivity) {
-            throw new Error(`Activity with ID ${id} not found`);
-        }
-
-        return updatedActivity;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }

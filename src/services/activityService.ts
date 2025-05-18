@@ -1,6 +1,11 @@
 import { prisma } from '../db/prismaClient';
-import { ActivityInput, EditActivityInput } from '../types';
-import { deleteActivityByIdAndUserId, fetchActivityById, updateActivityByIdAndUserId } from '../db/activity';
+import { Prisma } from '@prisma/client';
+import { ActivityInput, EditActivityInput, GetActivitiesInput } from '../types';
+import {
+    deleteActivityByIdAndUserId,
+    fetchActivityById,
+    updateActivityByIdAndUserId,
+} from '../db/activity';
 
 export const addActivityService = async ({
     category,
@@ -32,13 +37,45 @@ export const deleteActivityService = async (id: number, userId?: number) => {
     }
 };
 
-export const getActivitiesByUserIdService = async (userId?: number) => {
+export const getActivitiesByUserIdService = async ({
+    userId,
+    search = '',
+    page = 1,
+    limit = 10,
+}: GetActivitiesInput) => {
     try {
-        return prisma.activity.findMany({
-            where: { userId },
-        });
-    } catch (error: any) {
-        throw new Error(`${error.message}`);
+        const skip = (page - 1) * limit;
+
+        const where = {
+            userId,
+            OR: [
+                { category: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            ],
+        };
+
+        const [activities, total] = await Promise.all([
+            prisma.activity.findMany({
+                where,
+                skip,
+                take: limit,
+                orderBy: { date: 'desc' },
+            }),
+            prisma.activity.count({ where }),
+        ]);
+
+        return {
+            data: activities,
+            pagination: {
+                total,
+                page,
+                limit,
+                pages: Math.ceil(total / limit),
+            },
+        };
+    } catch (err) {
+        console.error('Error in getActivitiesService:', err);
+        throw new Error('Database query failed');
     }
 };
 

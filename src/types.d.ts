@@ -16,8 +16,15 @@ export interface ActivityInput {
     emission: number;
     activityDate: Date;
     userId?: number; //check this later
-};
+}
 
 export interface EditActivityInput extends Partial<ActivityInput> {
     id: number;
+}
+
+export interface GetActivitiesInput {
+    userId?: number;
+    search?: string;
+    page?: number;
+    limit?: number;
 }

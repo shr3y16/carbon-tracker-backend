@@ -40,7 +40,13 @@ export const deleteActivityController = async (req: AuthRequest, res: Response) 
 export const getActivitiesByUserIdController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
-        const activities = await getActivitiesByUserIdService(userId);
+        const { search = '', page = 1, limit = 10 } = req.query;
+        const activities = await getActivitiesByUserIdService({
+            userId,
+            search: String(search),
+            page: Number(page),
+            limit: Number(limit),
+        });
         res.status(200).json(activities);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
@@ -79,4 +85,4 @@ export const updateActivityController = async (req: AuthRequest, res: Response) 
     } catch (err: any) {
         res.status(400).json({ error: err.message });
     }
-}
+};
