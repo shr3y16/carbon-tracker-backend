@@ -8,10 +8,11 @@ import {
     updateActivityService,
 } from '../services/activityService';
 import { SortBy, SortOrder } from '../enums';
+import { getUserIdOrThrow } from '../utils/validateUserId';
 
 export const addActivityController = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = getUserIdOrThrow(req);
         const { category, description, emission, date } = req.body;
         const activityDate = new Date(date);
         const activity = await addActivityService({
@@ -29,7 +30,7 @@ export const addActivityController = async (req: AuthRequest, res: Response) => 
 
 export const deleteActivityController = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = getUserIdOrThrow(req);
         const id = parseInt(req.params.id);
         const deletedActivity = await deleteActivityService(id, userId);
         res.status(201).json(deletedActivity);
@@ -41,6 +42,10 @@ export const deleteActivityController = async (req: AuthRequest, res: Response) 
 export const getActivitiesByUserIdController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
+        if (!userId) {
+            res.status(500).json({ error: 'User ID missing after authentication' });
+            return;
+        }
         const {
             search = '',
             page = 1,
@@ -64,7 +69,7 @@ export const getActivitiesByUserIdController = async (req: AuthRequest, res: Res
 
 export const getActivitiesByIdController = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = getUserIdOrThrow(req);
         const id = parseInt(req.params.id);
         const activity = await getActivityByIdAndUserIdService(id, userId);
         res.status(200).json(activity);
@@ -75,7 +80,7 @@ export const getActivitiesByIdController = async (req: AuthRequest, res: Respons
 
 export const updateActivityController = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.userId;
+        const userId = getUserIdOrThrow(req);
         const id = parseInt(req.params.id);
         const { category, description, emission, date } = req.body;
         let activityDate: Date | undefined;

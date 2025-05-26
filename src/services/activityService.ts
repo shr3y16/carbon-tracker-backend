@@ -30,7 +30,7 @@ export const addActivityService = async ({
     }
 };
 
-export const deleteActivityService = async (id: number, userId?: number) => {
+export const deleteActivityService = async (id: number, userId: number) => {
     try {
         return await deleteActivityByIdAndUserId(id, userId);
     } catch (error: any) {
@@ -82,7 +82,7 @@ export const getActivitiesByUserIdService = async ({
     }
 };
 
-export const getActivityByIdAndUserIdService = async (id: number, userId?: number) => {
+export const getActivityByIdAndUserIdService = async (id: number, userId: number) => {
     try {
         return await fetchActivityById(id, userId);
     } catch (error: any) {
