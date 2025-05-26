@@ -6,6 +6,7 @@ import {
     fetchActivityById,
     updateActivityByIdAndUserId,
 } from '../db/activity';
+import { SortBy, SortOrder } from '../enums';
 
 export const addActivityService = async ({
     category,
@@ -42,6 +43,8 @@ export const getActivitiesByUserIdService = async ({
     search = '',
     page = 1,
     limit = 10,
+    sortBy = SortBy.DATE,
+    sortOrder = SortOrder.DESC,
 }: GetActivitiesInput) => {
     try {
         const skip = (page - 1) * limit;
@@ -59,7 +62,7 @@ export const getActivitiesByUserIdService = async ({
                 where,
                 skip,
                 take: limit,
-                orderBy: { date: 'desc' },
+                orderBy: { [sortBy]: sortOrder },
             }),
             prisma.activity.count({ where }),
         ]);

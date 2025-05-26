@@ -1,3 +1,5 @@
+import { SortBy } from './enums';
+
 export interface UserRegisterInput {
     email: string;
     password: string;
@@ -27,4 +29,6 @@ export interface GetActivitiesInput {
     search?: string;
     page?: number;
     limit?: number;
+    sortBy?: SortBy;
+    sortOrder?: SortOrder;
 }

@@ -7,6 +7,7 @@ import {
     getActivityByIdAndUserIdService,
     updateActivityService,
 } from '../services/activityService';
+import { SortBy, SortOrder } from '../enums';
 
 export const addActivityController = async (req: AuthRequest, res: Response) => {
     try {
@@ -40,12 +41,20 @@ export const deleteActivityController = async (req: AuthRequest, res: Response) 
 export const getActivitiesByUserIdController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.userId;
-        const { search = '', page = 1, limit = 10 } = req.query;
+        const {
+            search = '',
+            page = 1,
+            limit = 10,
+            sortBy = SortBy.DATE,
+            sortOrder = SortOrder.DESC,
+        } = req.query;
         const activities = await getActivitiesByUserIdService({
             userId,
             search: String(search),
             page: Number(page),
             limit: Number(limit),
+            sortBy: sortBy as SortBy,
+            sortOrder: sortOrder as SortOrder,
         });
         res.status(200).json(activities);
     } catch (err: any) {

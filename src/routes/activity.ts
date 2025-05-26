@@ -7,12 +7,21 @@ import {
     getActivitiesByUserIdController,
     updateActivityController,
 } from '../controllers/activityController';
-import { validateCreateActivity } from '../middlewares/validators/activityValidators';
+import {
+    validateCreateActivity,
+    validateGetActivitiesByUserId,
+} from '../middlewares/validators/activityValidators';
 import { handleValidation } from '../middlewares/validate';
 
 const router = express.Router();
 
-router.get('/all', authenticateToken, getActivitiesByUserIdController);
+router.get(
+    '/all',
+    authenticateToken,
+    validateGetActivitiesByUserId,
+    handleValidation,
+    getActivitiesByUserIdController,
+);
 router.get('/:id', authenticateToken, getActivitiesByIdController);
 router.post(
     '/add',
