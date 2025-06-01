@@ -8,6 +8,7 @@ import {
     updateActivityByIdAndUserId,
 } from '../db/activity';
 import { SortBy, SortOrder } from '../enums';
+import redisClient from '../config/redis';
 
 export const addActivityService = async ({
     category,
@@ -17,7 +18,7 @@ export const addActivityService = async ({
     userId,
 }: ActivityInput) => {
     try {
-        return prisma.activity.create({
+        const activity = prisma.activity.create({
             data: {
                 category,
                 description,
@@ -26,6 +27,8 @@ export const addActivityService = async ({
                 user: { connect: { id: userId } },
             },
         });
+        await redisClient.del(`summary:${userId}`);
+        return activity;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
@@ -33,7 +36,9 @@ export const addActivityService = async ({
 
 export const deleteActivityService = async (id: number, userId: number) => {
     try {
-        return await deleteActivityByIdAndUserId(id, userId);
+        const deletedActivity = await deleteActivityByIdAndUserId(id, userId);
+        await redisClient.del(`summary:${userId}`);
+        return deletedActivity;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
@@ -100,7 +105,7 @@ export const updateActivityService = async ({
     activityDate,
 }: EditActivityInput) => {
     try {
-        return await updateActivityByIdAndUserId({
+        const updatedActivity = await updateActivityByIdAndUserId({
             id,
             userId,
             category,
@@ -108,6 +113,8 @@ export const updateActivityService = async ({
             description,
             activityDate,
         });
+        await redisClient.del(`summary:${userId}`);
+        return updatedActivity;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
@@ -115,7 +122,17 @@ export const updateActivityService = async ({
 
 export const getSummaryService = async (userId: number) => {
     try {
-        return await getSummaryByUserId(userId);
+        const cacheKey = `summary:${userId}`;
+        const cached = await redisClient.get(cacheKey);
+        if (cached) {
+            return JSON.parse(cached); // return cached version
+        }
+
+        const summary = await getSummaryByUserId(userId);
+
+        await redisClient.setEx(cacheKey, 3600, JSON.stringify(summary));
+        
+        return summary;
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
