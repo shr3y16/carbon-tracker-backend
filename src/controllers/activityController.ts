@@ -5,6 +5,7 @@ import {
     deleteActivityService,
     getActivitiesByUserIdService,
     getActivityByIdAndUserIdService,
+    getSummaryService,
     updateActivityService,
 } from '../services/activityService';
 import { SortBy, SortOrder } from '../enums';
@@ -69,6 +70,7 @@ export const getActivitiesByUserIdController = async (req: AuthRequest, res: Res
 
 export const getActivitiesByIdController = async (req: AuthRequest, res: Response) => {
     try {
+        console.log('getActivitiesByIdController called');
         const userId = getUserIdOrThrow(req);
         const id = parseInt(req.params.id);
         const activity = await getActivityByIdAndUserIdService(id, userId);
@@ -96,6 +98,16 @@ export const updateActivityController = async (req: AuthRequest, res: Response) 
             id,
         });
         res.status(200).json(updatedActivity);
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const getSummaryController = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = getUserIdOrThrow(req);
+        const summary = await getSummaryService(userId);
+        res.status(200).json(summary);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
     }

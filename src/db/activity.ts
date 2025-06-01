@@ -63,3 +63,24 @@ export const updateActivityByIdAndUserId = async ({
         throw new Error(`${error.message}`);
     }
 };
+
+export const getSummaryByUserId = async (userId: number) => {
+    const [total, grouped] = await Promise.all([
+        prisma.activity.aggregate({
+            where: { userId },
+            _sum: { emission: true },
+        }),
+        prisma.activity.groupBy({
+            by: ['category'],
+            where: { userId },
+            _sum: { emission: true },
+        }),
+    ]);
+
+    return {
+        totalEmission: total._sum.emission ?? 0,
+        emissionByCategory: Object.fromEntries(
+            grouped.map((g) => [g.category, g._sum.emission ?? 0]),
+        ),
+    };
+};

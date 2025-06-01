@@ -13,7 +13,7 @@ export const validateCreateActivity = [
 ];
 
 export const validateActivityIdParam = [
-    param('id').isInt().withMessage('Activity ID must be an integer'),
+    param('id').isInt({ gt: 0 }).withMessage('Activity ID must be an integer > 0'),
 ];
 
 export const validateGetActivitiesByUserId = [

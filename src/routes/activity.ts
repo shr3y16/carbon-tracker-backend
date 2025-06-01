@@ -5,9 +5,11 @@ import {
     deleteActivityController,
     getActivitiesByIdController,
     getActivitiesByUserIdController,
+    getSummaryController,
     updateActivityController,
 } from '../controllers/activityController';
 import {
+    validateActivityIdParam,
     validateCreateActivity,
     validateGetActivitiesByUserId,
 } from '../middlewares/validators/activityValidators';
@@ -22,7 +24,8 @@ router.get(
     handleValidation,
     getActivitiesByUserIdController,
 );
-router.get('/:id', authenticateToken, getActivitiesByIdController);
+router.get('/summary', authenticateToken, getSummaryController);
+router.get('/:id', authenticateToken, validateActivityIdParam, handleValidation, getActivitiesByIdController);
 router.post(
     '/add',
     authenticateToken,

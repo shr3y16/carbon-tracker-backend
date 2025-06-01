@@ -3,7 +3,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth';
-import footprintRoutes from './routes/footprint';
 import activityRoutes from './routes/activity';
 
 dotenv.config();
@@ -14,7 +13,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', authRoutes);
-app.use('/footprint', footprintRoutes);
 app.use('/activity', activityRoutes);
 
 app.get('/', (req, res) => {

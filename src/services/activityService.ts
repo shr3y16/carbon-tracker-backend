@@ -4,6 +4,7 @@ import { ActivityInput, EditActivityInput, GetActivitiesInput } from '../types';
 import {
     deleteActivityByIdAndUserId,
     fetchActivityById,
+    getSummaryByUserId,
     updateActivityByIdAndUserId,
 } from '../db/activity';
 import { SortBy, SortOrder } from '../enums';
@@ -107,6 +108,14 @@ export const updateActivityService = async ({
             description,
             activityDate,
         });
+    } catch (error: any) {
+        throw new Error(`${error.message}`);
+    }
+};
+
+export const getSummaryService = async (userId: number) => {
+    try {
+        return await getSummaryByUserId(userId);
     } catch (error: any) {
         throw new Error(`${error.message}`);
     }
