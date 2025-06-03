@@ -18,7 +18,7 @@ export const addActivityService = async ({
     userId,
 }: ActivityInput) => {
     try {
-        const activity = prisma.activity.create({
+        const activity = await prisma.activity.create({
             data: {
                 category,
                 description,
@@ -53,25 +53,31 @@ export const getActivitiesByUserIdService = async ({
     sortOrder = SortOrder.DESC,
 }: GetActivitiesInput) => {
     try {
-        const skip = (page - 1) * limit;
+        const activities = await prisma.activity.findMany({
+            where: {
+                userId,
+                OR: [
+                    { category: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                ],
+            },
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { [sortBy]: sortOrder },
+        });
 
-        const where = {
-            userId,
-            OR: [
-                { category: { contains: search, mode: Prisma.QueryMode.insensitive } },
-                { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
-            ],
-        };
+        // Only call count if findMany succeeds
+        const total = await prisma.activity.count({
+            where: {
+                userId,
+                OR: [
+                    { category: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                    { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
+                ],
+            },
+        });
 
-        const [activities, total] = await Promise.all([
-            prisma.activity.findMany({
-                where,
-                skip,
-                take: limit,
-                orderBy: { [sortBy]: sortOrder },
-            }),
-            prisma.activity.count({ where }),
-        ]);
+        const pages = Math.ceil(total / limit);
 
         return {
             data: activities,
@@ -79,11 +85,10 @@ export const getActivitiesByUserIdService = async ({
                 total,
                 page,
                 limit,
-                pages: Math.ceil(total / limit),
+                pages,
             },
         };
     } catch (err) {
-        console.error('Error in getActivitiesService:', err);
         throw new Error('Database query failed');
     }
 };
@@ -131,7 +136,7 @@ export const getSummaryService = async (userId: number) => {
         const summary = await getSummaryByUserId(userId);
 
         await redisClient.setEx(cacheKey, 3600, JSON.stringify(summary));
-        
+
         return summary;
     } catch (error: any) {
         throw new Error(`${error.message}`);
