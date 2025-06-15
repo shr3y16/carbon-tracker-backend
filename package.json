@@ -4,8 +4,9 @@
   "description": "Carbon Tracker Backend",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "dev": "ts-node-dev --respawn src/server.ts",
+    "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
