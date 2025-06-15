@@ -70,7 +70,6 @@ export const getActivitiesByUserIdController = async (req: AuthRequest, res: Res
 
 export const getActivitiesByIdController = async (req: AuthRequest, res: Response) => {
     try {
-        console.log('getActivitiesByIdController called');
         const userId = getUserIdOrThrow(req);
         const id = parseInt(req.params.id);
         const activity = await getActivityByIdAndUserIdService(id, userId);
