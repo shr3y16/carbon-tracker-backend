@@ -1,8 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
-
+import { NextFunction, Request, Response } from 'express';
+import { verifyToken } from '../utils/jwt';
 export interface AuthRequest extends Request {
     userId?: number;
 }
@@ -17,7 +14,7 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     }
 
     try {
-        const payload = jwt.verify(token, JWT_SECRET) as { userId: number };
+        const payload = verifyToken(token) as { userId: number };
         req.userId = payload.userId;
         next();
     } catch {
