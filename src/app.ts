@@ -9,8 +9,14 @@ import healthRoutes from './routes/health';
 dotenv.config();
 
 const app = express();
+const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
 
-app.use(cors());
+app.use( cors({
+    origin: frontendURL,
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+  }));
 app.use(express.json());
 
 app.use('/auth', authRoutes);
